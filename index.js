@@ -19,6 +19,52 @@ const userCollection = client.db('mobileBuySell').collection('users')
 const mobilesCollection = client.db('mobileBuySell').collection('mobiles')
 const bookingCollection = client.db('mobileBuySell').collection('booking')
 
+const run = async () => {
+    try {
+        await client.connect()
+        console.log('this client connect')
+
+
+    } catch (error) {
+        console.log(error.message);
+    }
+
+}
+run().catch(err => console.log(err.message))
+
+// mobile get all 
+
+app.get('/users', async (req, res) => {
+    let filter = {}
+    console.log(filter)
+
+    try {
+        if (req.query) {
+            filter = {
+                email: req.query.email
+            }
+        }
+        console.log(filter);
+        const result = await userCollection.find(filter).toArray()
+        if (result.length > 0) {
+            res.send({
+                success: true,
+                data: result
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'No data found'
+            })
+        }
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
 
 app.get('/', (req, res) => {
 
