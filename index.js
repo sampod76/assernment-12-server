@@ -66,6 +66,60 @@ app.get('/users', async (req, res) => {
     }
 })
 
+
+app.post('/users', async (req, res) => {
+    const body = req.body
+
+    try {
+
+        // const result = await userCollection.insertOne(body)
+        const result = await userCollection.insertOne(body)
+        res.send({
+            success: true,
+            data: result
+        })
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+//all mobile phone gate
+app.get('/mobiles', async (req, res) => {
+    let filter = {}
+    // console.log(req)
+
+    try {
+        if (req.query.catagori) {
+            filter = {
+                name: req.query.catagori
+            }
+        }
+        if (req.query.email) {
+            filter = {
+                'sellerInfo.salarEmail': req.query.email
+            }
+        }
+
+        const result = await mobilesCollection.find(filter).toArray()
+
+        res.send({
+            success: true,
+            data: result
+        })
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+
 app.get('/', (req, res) => {
 
 
