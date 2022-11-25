@@ -1,0 +1,170 @@
+[
+    {
+        "name": "Apple",
+        "model": "Apple iPhone 7 Plus",
+        "sellerInfo": {
+            "seller": "sampod",
+            "salarNumber": "01876226685",
+            "salarEmail": "sampodnath@gmail.com",
+            "salarLoaction": "Noakhali",
+            "selarPrice": 40009,
+            "veryfied": false
+        },
+        "OfficalPrice": 57000,
+        "stock": true,
+        "reating": 1,
+        "img": "https://www.bdstall.com/asset/product-image/giant_118765.jpg",
+        "useYears": 1
+    },
+    {
+        "name": "Apple",
+        "model": "Apple iPhone 12 Mini",
+        "sellerInfo": {
+            "seller": "sampod",
+            "salarNumber": "01876226685",
+            "salarEmail": "sampodnath@gmail.com",
+            "salarLoaction": "Noakhali",
+            "selarPrice": 40009,
+            "veryfied": false
+        },
+        "OfficalPrice": 59000,
+        "stock": true,
+        "reating": 1,
+        "img": "https://www.bdstall.com/asset/product-image/giant_175877.jpg",
+        "useYears": 1
+    },
+    {
+        "name": "Apple",
+        "model": "Apple iPhone X ",
+        "sellerInfo": {
+            "seller": "sampod",
+            "salarNumber": "01876226685",
+            "salarEmail": "sampodnath@gmail.com",
+            "salarLoaction": "Noakhali",
+            "selarPrice": 40009,
+            "veryfied": false
+        },
+        "OfficalPrice": 10000,
+        "stock": true,
+        "reating": 1,
+        "img": "https://www.bdstall.com/asset/product-image/giant_171190.jpg",
+        "useYears": 1
+    },
+    {
+        "name": "Samsung",
+        "model": "Samsung Galaxy S10",
+        "sellerInfo": {
+            "seller": "sampod",
+            "salarNumber": "01876226685",
+            "salarEmail": "sampodnath@gmail.com",
+            "salarLoaction": "Noakhali",
+            "selarPrice": 40009,
+            "veryfied": false
+        },
+        "OfficalPrice": 49000,
+        "stock": true,
+        "reating": 1,
+        "img": "https://www.bdstall.com/asset/product-image/giant_171825.jpg",
+        "useYears": 1
+    },
+    {
+        "name": "Samsung",
+        "model": "Samsung Galaxy F42",
+        "seller": "sampod",
+        "salarNumber": "01876226685",
+        "salarEmail": "sampodnath@gmail.com",
+        "salarLoaction": "Noakhali",
+        "selarPrice": 40004,
+        "veryfied": false,
+        "OfficalPrice": 19000,
+        "stock": true,
+        "reating": 1,
+        "img": "https://www.bdstall.com/asset/product-image/giant_154091.jpeg",
+        "useYears": 1
+    },
+    {
+        "name": "Samsung",
+        "model": "Samsung Galaxy A23",
+        "sellerInfo": {
+            "seller": "sampod",
+            "salarNumber": "01876226685",
+            "salarEmail": "sampodnath@gmail.com",
+            "salarLoaction": "Noakhali",
+            "selarPrice": 40009,
+            "veryfied": false
+        },
+        "OfficalPrice": 59000,
+        "stock": true,
+        "reating": 1,
+        "img": "https://www.bdstall.com/asset/product-image/giant_154086.jpg",
+        "useYears": 1
+    },
+    {
+        "name": "Vivo",
+        "model": "Vivo Y85 ",
+        "sellerInfo": {
+            "seller": "sampod",
+            "salarNumber": "01876226685",
+            "salarEmail": "sampodnath@gmail.com",
+            "salarLoaction": "Noakhali",
+            "selarPrice": 40009,
+            "veryfied": false
+        },
+        "OfficalPrice": 53000,
+        "stock": true,
+        "reating": 1,
+        "img": "https://www.bdstall.com/asset/product-image/giant_155161.jpg",
+        "useYears": 1
+    },
+    {
+        "name": "Vivo",
+        "model": "Vivo Y67 ",
+        "sellerInfo": {
+            "seller": "sampod",
+            "salarNumber": "01876226685",
+            "salarEmail": "sampodnath@gmail.com",
+            "salarLoaction": "Noakhali",
+            "selarPrice": 40009,
+            "veryfied": false
+        },
+        "OfficalPrice": 11000,
+        "stock": true,
+        "reating": 1,
+        "img": "https://www.bdstall.com/asset/product-image/giant_123504.jpg",
+        "useYears": 1
+    },
+    {
+        "name": "Oppo ",
+        "model": "Oppo A54 ",
+        "sellerInfo": {
+            "seller": "sampod",
+            "salarNumber": "01876226685",
+            "salarEmail": "sampodnath@gmail.com",
+            "salarLoaction": "Noakhali",
+            "selarPrice": 40009,
+            "veryfied": false
+        },
+        "OfficalPrice": 68000,
+        "stock": true,
+        "reating": 1,
+        "img": "https://www.bdstall.com/asset/product-image/giant_157588.jpg",
+        "useYears": 1
+    },
+    {
+        "name": "Oppo ",
+        "model": "Oppo Reno5",
+        "sellerInfo": {
+            "seller": "sampod",
+            "salarNumber": "01876226685",
+            "salarEmail": "sampodnath@gmail.com",
+            "salarLoaction": "Noakhali",
+            "selarPrice": 40009,
+            "veryfied": false
+        },
+        "OfficalPrice": 65000,
+        "stock": true,
+        "reating": 1,
+        "img": "https://www.bdstall.com/asset/product-image/giant_142680.jpg",
+        "useYears": 1
+    }
+]
