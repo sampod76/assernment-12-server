@@ -120,6 +120,53 @@ app.get('/mobiles', async (req, res) => {
 })
 
 
+// catagori mobile 
+app.get('/mobiles/:id', async (req, res) => {
+
+    try {
+        const result = await mobilesCollection.findOne({ _id: ObjectId(req.params.id) })
+
+        res.send({
+            success: true,
+            data: result
+        })
+
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+// booking callection 
+
+app.post('/booking', async (req, res) => {
+    const updateDoc = req.body
+    try {
+        const result = await bookingCollection.insertOne(updateDoc)
+
+        if (result.insertedId) {
+            res.send({
+                success: true,
+                message: `Booking successfull ${insertedId}`
+            })
+        }else{
+            res.send({
+                success: false,
+                message: `Booking successfull ${insertedId}`
+            })
+        }
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
 app.get('/', (req, res) => {
 
 
