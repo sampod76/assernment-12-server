@@ -2,12 +2,12 @@
     {
         "name": "Apple",
         "model": "Apple iPhone 7 Plus",
-        "sellerInfo": {
-            "seller": "sampod",
-            "salarNumber": "01876226685",
-            "salarEmail": "sampodnath@gmail.com",
-            "salarLoaction": "Noakhali",
-            "selarPrice": 40009,
+        "sellarInfo": {
+            "sellar": "sampod",
+            "sellarNumber": "01876226685",
+            "sellarEmail": "sampodnath@gmail.com",
+            "sellarLoaction": "Noakhali",
+            "sellarPrice": 40009,
             "veryfied": false
         },
         "OfficalPrice": 57000,
@@ -19,12 +19,12 @@
     {
         "name": "Apple",
         "model": "Apple iPhone 12 Mini",
-        "sellerInfo": {
-            "seller": "sampod",
-            "salarNumber": "01876226685",
-            "salarEmail": "sampodnath@gmail.com",
-            "salarLoaction": "Noakhali",
-            "selarPrice": 40009,
+        "sellarInfo": {
+            "sellar": "sampod",
+            "sellarNumber": "01876226685",
+            "sellarEmail": "sampodnath@gmail.com",
+            "sellarLoaction": "Noakhali",
+            "sellarPrice": 40009,
             "veryfied": false
         },
         "OfficalPrice": 59000,
@@ -36,12 +36,12 @@
     {
         "name": "Apple",
         "model": "Apple iPhone X ",
-        "sellerInfo": {
-            "seller": "sampod",
-            "salarNumber": "01876226685",
-            "salarEmail": "sampodnath@gmail.com",
-            "salarLoaction": "Noakhali",
-            "selarPrice": 40009,
+        "sellarInfo": {
+            "sellar": "sampod",
+            "sellarNumber": "01876226685",
+            "sellarEmail": "sampodnath@gmail.com",
+            "sellarLoaction": "Noakhali",
+            "sellarPrice": 40009,
             "veryfied": false
         },
         "OfficalPrice": 10000,
@@ -53,12 +53,12 @@
     {
         "name": "Samsung",
         "model": "Samsung Galaxy S10",
-        "sellerInfo": {
-            "seller": "sampod",
-            "salarNumber": "01876226685",
-            "salarEmail": "sampodnath@gmail.com",
-            "salarLoaction": "Noakhali",
-            "selarPrice": 40009,
+        "sellarInfo": {
+            "sellar": "sampod",
+            "sellarNumber": "01876226685",
+            "sellarEmail": "sampodnath@gmail.com",
+            "sellarLoaction": "Noakhali",
+            "sellarPrice": 40009,
             "veryfied": false
         },
         "OfficalPrice": 49000,
@@ -70,11 +70,11 @@
     {
         "name": "Samsung",
         "model": "Samsung Galaxy F42",
-        "seller": "sampod",
-        "salarNumber": "01876226685",
-        "salarEmail": "sampodnath@gmail.com",
-        "salarLoaction": "Noakhali",
-        "selarPrice": 40004,
+        "sellar": "sampod",
+        "sellarNumber": "01876226685",
+        "sellarEmail": "sampodnath@gmail.com",
+        "sellarLoaction": "Noakhali",
+        "sellarPrice": 40004,
         "veryfied": false,
         "OfficalPrice": 19000,
         "stock": true,
@@ -85,12 +85,12 @@
     {
         "name": "Samsung",
         "model": "Samsung Galaxy A23",
-        "sellerInfo": {
-            "seller": "sampod",
-            "salarNumber": "01876226685",
-            "salarEmail": "sampodnath@gmail.com",
-            "salarLoaction": "Noakhali",
-            "selarPrice": 40009,
+        "sellarInfo": {
+            "sellar": "sampod",
+            "sellarNumber": "01876226685",
+            "sellarEmail": "sampodnath@gmail.com",
+            "sellarLoaction": "Noakhali",
+            "sellarPrice": 40009,
             "veryfied": false
         },
         "OfficalPrice": 59000,
@@ -102,12 +102,12 @@
     {
         "name": "Vivo",
         "model": "Vivo Y85 ",
-        "sellerInfo": {
-            "seller": "sampod",
-            "salarNumber": "01876226685",
-            "salarEmail": "sampodnath@gmail.com",
-            "salarLoaction": "Noakhali",
-            "selarPrice": 40009,
+        "sellarInfo": {
+            "sellar": "sampod",
+            "sellarNumber": "01876226685",
+            "sellarEmail": "sampodnath@gmail.com",
+            "sellarLoaction": "Noakhali",
+            "sellarPrice": 40009,
             "veryfied": false
         },
         "OfficalPrice": 53000,
@@ -119,12 +119,12 @@
     {
         "name": "Vivo",
         "model": "Vivo Y67 ",
-        "sellerInfo": {
-            "seller": "sampod",
-            "salarNumber": "01876226685",
-            "salarEmail": "sampodnath@gmail.com",
-            "salarLoaction": "Noakhali",
-            "selarPrice": 40009,
+        "sellarInfo": {
+            "sellar": "sampod",
+            "sellarNumber": "01876226685",
+            "sellarEmail": "sampodnath@gmail.com",
+            "sellarLoaction": "Noakhali",
+            "sellarPrice": 40009,
             "veryfied": false
         },
         "OfficalPrice": 11000,
@@ -136,12 +136,12 @@
     {
         "name": "Oppo ",
         "model": "Oppo A54 ",
-        "sellerInfo": {
-            "seller": "sampod",
-            "salarNumber": "01876226685",
-            "salarEmail": "sampodnath@gmail.com",
-            "salarLoaction": "Noakhali",
-            "selarPrice": 40009,
+        "sellarInfo": {
+            "sellar": "sampod",
+            "sellarNumber": "01876226685",
+            "sellarEmail": "sampodnath@gmail.com",
+            "sellarLoaction": "Noakhali",
+            "sellarPrice": 40009,
             "veryfied": false
         },
         "OfficalPrice": 68000,
@@ -153,12 +153,12 @@
     {
         "name": "Oppo ",
         "model": "Oppo Reno5",
-        "sellerInfo": {
-            "seller": "sampod",
-            "salarNumber": "01876226685",
-            "salarEmail": "sampodnath@gmail.com",
-            "salarLoaction": "Noakhali",
-            "selarPrice": 40009,
+        "sellarInfo": {
+            "sellar": "sampod",
+            "sellarNumber": "01876226685",
+            "sellarEmail": "sampodnath@gmail.com",
+            "sellarLoaction": "Noakhali",
+            "sellarPrice": 40009,
             "veryfied": false
         },
         "OfficalPrice": 65000,

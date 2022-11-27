@@ -2,13 +2,17 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors')
 require('dotenv').config()
+const jwt = require('jsonwebtoken');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+// console.log(stripe);
 
 const app = express()
 
 app.use(express.json())
 app.use(cors())
-const datas = require('./product.json');
-const { query } = require('express');
+
+
+
 
 const port = process.env.POST || 5000;
 
@@ -18,33 +22,64 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const userCollection = client.db('mobileBuySell').collection('users')
 const mobilesCollection = client.db('mobileBuySell').collection('mobiles')
 const bookingCollection = client.db('mobileBuySell').collection('booking')
+const whitelistCollection = client.db('mobileBuySell').collection('whitelist')
+const paymentsCollection = client.db('mobileBuySell').collection('payments')
+
 
 const run = async () => {
     try {
         await client.connect()
         console.log('this client connect')
-
-
     } catch (error) {
         console.log(error.message);
     }
-
 }
 run().catch(err => console.log(err.message))
+
+app.post('/jwt', async (req, res) => {
+    const email = req.body.email
+    // console.log(email)
+    try {
+        const user = await userCollection.findOne({ email })
+        // console.log(user);
+        if (user) {
+            const token = jwt.sign({ email }, process.env.JWT_TOKEN_KEY, { expiresIn: '30d' })
+            // console.log(token);
+            res.send({
+                success: true,
+                token
+            })
+        } else {
+            res.send({
+                success: false,
+                message: `This ${email} not found`
+            })
+        }
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+
+
 
 // mobile get all 
 
 app.get('/users', async (req, res) => {
     let filter = {}
-    console.log(filter)
 
     try {
-        if (req.query) {
+        if (req.query.email) {
             filter = {
                 email: req.query.email
             }
         }
-        console.log(filter);
+       
+        // console.log(filter);
         const result = await userCollection.find(filter).toArray()
         if (result.length > 0) {
             res.send({
@@ -66,12 +101,9 @@ app.get('/users', async (req, res) => {
     }
 })
 
-
 app.post('/users', async (req, res) => {
     const body = req.body
-
     try {
-
         // const result = await userCollection.insertOne(body)
         const result = await userCollection.insertOne(body)
         res.send({
@@ -91,7 +123,6 @@ app.post('/users', async (req, res) => {
 app.get('/mobiles', async (req, res) => {
     let filter = {}
     // console.log(req)
-
     try {
         if (req.query.catagori) {
             filter = {
@@ -100,12 +131,10 @@ app.get('/mobiles', async (req, res) => {
         }
         if (req.query.email) {
             filter = {
-                'sellerInfo.salarEmail': req.query.email
+                'sellarInfo.sellarEmail': req.query.email
             }
         }
-
         const result = await mobilesCollection.find(filter).toArray()
-
         res.send({
             success: true,
             data: result
@@ -119,19 +148,114 @@ app.get('/mobiles', async (req, res) => {
     }
 })
 
-
 // catagori mobile 
 app.get('/mobiles/:id', async (req, res) => {
-
+    // console.log(req.params.id)
     try {
         const result = await mobilesCollection.findOne({ _id: ObjectId(req.params.id) })
+        if (result._id) {
+            res.send({
+                success: true,
+                data: result
+            })
+        } else {
+            res.send({
+                success: true,
+                message: 'no booking found'
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
 
+//update mobilee
+app.patch('/mobiles/:id', async (req, res) => {
+    const datas = req.body
+    try {
+        const result = await mobilesCollection.updateOne({ _id: ObjectId(req.params.id) }, { $set: datas })
+
+        if (result.modifiedCount) {
+            res.send({
+                success: true,
+                message: 'Successfully mobile data update'
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'data not update'
+            })
+        }
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+
+//get booking 
+app.get('/booking', async (req, res) => {
+    const query = req.query.email
+    try {
+        const result = await bookingCollection.find({ useremail: query }).toArray()
+        // console.log(result)
         res.send({
             success: true,
             data: result
         })
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
 
-
+//get booking 
+app.get('/booking/:id', async (req, res) => {
+    const id = req.params.id
+    try {
+        const result = await bookingCollection.findOne({ _id: ObjectId(id) })
+        if (result._id) {
+            res.send({
+                success: true,
+                data: result
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'this item not booking'
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+// update booking 
+app.patch('/booking/:id', async (req, res) => {
+    const id = req.params.id
+    try {
+        const result = await bookingCollection.updateOne({ _id: ObjectId(id) }, { $set: { paid: true } })
+        if (result.modifiedCount) {
+            res.send({
+                success: true,
+                data: result
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'this item not update booking'
+            })
+        }
     } catch (error) {
         res.send({
             success: false,
@@ -143,19 +267,19 @@ app.get('/mobiles/:id', async (req, res) => {
 // booking callection 
 
 app.post('/booking', async (req, res) => {
-    const updateDoc = req.body
-    try {
-        const result = await bookingCollection.insertOne(updateDoc)
+    const bookingDos = req.body
 
+    try {
+        const result = await bookingCollection.insertOne(bookingDos)
         if (result.insertedId) {
             res.send({
                 success: true,
-                message: `Booking successfull ${insertedId}`
+                message: `Booking successfull ${result.insertedId}`
             })
-        }else{
+        } else {
             res.send({
                 success: false,
-                message: `Booking successfull ${insertedId}`
+                message: `this not booking`
             })
         }
 
@@ -167,9 +291,193 @@ app.post('/booking', async (req, res) => {
     }
 })
 
+//booking delete
+app.delete('/booking/:id', async (req, res) => {
+    const id = req.params.id
+    try {
+        const result = await bookingCollection.deleteOne({ _id: ObjectId(id) })
+        if (result.deletedCount) {
+            res.send({
+                success: true,
+                message: 'successfully delete'
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'do not delete'
+            })
+        }
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+//whitelist get
+app.get('/whitelist', async (req, res) => {
+    const emails = req.query.email
+    try {
+        const result = await whitelistCollection.find({ useremail: emails }).toArray()
+        res.send({
+            success: true,
+            data: result
+        })
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+
+// whitelist post
+app.post('/whitelist', async (req, res) => {
+    const whitelistDos = req.body
+    try {
+        const result = await whitelistCollection.insertOne(whitelistDos)
+        if (result.insertedId) {
+            res.send({
+                success: true,
+                message: `whitelist successfull ${result.insertedId}`
+            })
+        } else {
+            res.send({
+                success: false,
+                message: `this not whitelist`
+            })
+        }
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+// WhiteList delete 
+app.delete('/whitelist/:id', async (req, res) => {
+    const id = req.params.id
+    try {
+        const result = await whitelistCollection.deleteOne({ _id: ObjectId(id) })
+        if (result.deletedCount) {
+            res.send({
+                success: true,
+                message: 'successfully delete'
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'do not delete'
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+app.put('/updateMobile', async (req, res) => {
+    const data = req.body
+    try {
+        // ------------------------------------------------------
+        // update data to all mobile collacton
+        const filter = { _id: ObjectId(data.mobileId) }
+        const option = { upsert: true }
+        const findMobileData = await mobilesCollection.updateOne(filter, {
+            $set: {
+                stock: data.stock
+            }
+        }, option)
+
+        // -------------------------------------------------------
+
+        if (findMobileData.matchedCount) {
+            res.send({
+                success: true,
+                message: 'Successfull updates'
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'do not update '
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+
+//create payment cli
+app.post('/create-payment-intent', async (req, res) => {
+    const booking = req.body
+    const price = parseFloat(booking.price)
+    const amount = price * 100
+    // console.log(amount)
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        "payment_method_types": [
+            "card"
+        ],
+    });
+
+    res.send({
+        clientSecret: paymentIntent.client_secret,
+    });
+})
+
+//payment post
+app.post('/payments', async (req, res) => {
+    const paymentData = req.body
+    // const decodedEmial = req.decoded.email
+    try {
+
+        // get user data base 
+        // const userEmail = await usersCollection.findOne({ email: decodedEmial })
+
+        // if (userEmail.email !== decodedEmial) {
+        //     return res.send({
+        //         success: false,
+        //         message: 'You are not correct person this is payment '
+        //     })
+        // }
+
+        const result = await paymentsCollection.insertOne(paymentData)
+        if (result.insertedId) {
+            res.send({
+                success: true,
+                message: 'successfully data inside',
+                insertedId: result.insertedId
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'payment is not inside database'
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message + ' error'
+        })
+    }
+})
+
+
+
 app.get('/', (req, res) => {
-
-
     res.send('this server runnitn')
 })
 
