@@ -65,6 +65,31 @@ app.post('/jwt', async (req, res) => {
 })
 
 
+function jwtVerify(req, res, next) {
+
+    const authorisation = req.headers.authorisation
+    if (!authorisation) {
+        return res.status(401).send({
+            success: false,
+            message: 'unauthorised access 401'
+        })
+    }
+
+    jwt.verify(authorisation, process.env.JWT_TOKEN_KEY, function (error, decord) {
+
+        if (error) {
+            return res.status(403).send({
+                success: false,
+                message: '403 forbidden access'
+            })
+
+        }
+        req.decord = decord
+        next()
+    })
+
+}
+
 
 
 // all users find get all 
@@ -235,7 +260,7 @@ app.get('/mobiles', async (req, res) => {
 
 app.get('/mobiles/ads', async (req, res) => {
     let filter = {ads:true}
-    console.log(req.headers.authorization )
+    // console.log(req.headers.authorization )
     try {
       
         const result = await mobilesCollection.find(filter).toArray()
@@ -621,41 +646,6 @@ app.post('/payments', async (req, res) => {
 
         const result = await paymentsCollection.insertOne(paymentData)
         if (result.insertedId) {
-            res.send({
-                success: true,
-                message: 'successfully data inside',
-                insertedId: result.insertedId
-            })
-        } else {
-            res.send({
-                success: false,
-                message: 'payment is not inside database'
-            })
-        }
-    } catch (error) {
-        res.send({
-            success: false,
-            message: error.message + ' error'
-        })
-    }
-})
-app.patch('/payments', async (req, res) => {
-    const paymentData = req.body
-    // const decodedEmial = req.decoded.email
-    try {
-
-        // get user data base 
-        // const userEmail = await usersCollection.findOne({ email: decodedEmial })
-
-        // if (userEmail.email !== decodedEmial) {
-        //     return res.send({
-        //         success: false,
-        //         message: 'You are not correct person this is payment '
-        //     })
-        // }
-
-        const result = paymentsCollection.updateOne(paymentData)
-        if (result.matchedCount) {
             res.send({
                 success: true,
                 message: 'successfully data inside',
