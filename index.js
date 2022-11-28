@@ -26,15 +26,15 @@ const whitelistCollection = client.db('mobileBuySell').collection('whitelist')
 const paymentsCollection = client.db('mobileBuySell').collection('payments')
 
 
-const run = async () => {
-    try {
-        await client.connect()
-        console.log('this client connect')
-    } catch (error) {
-        console.log(error.message);
-    }
-}
-run().catch(err => console.log(err.message))
+// const run = async () => {
+//     try {
+//         await client.connect()
+//         console.log('this client connect')
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// }
+// run().catch(err => console.log(err.message))
 
 app.post('/jwt', async (req, res) => {
     const email = req.body.email
@@ -67,10 +67,11 @@ app.post('/jwt', async (req, res) => {
 
 
 
-// mobile get all 
+// all users find get all 
 
 app.get('/users', async (req, res) => {
     let filter = {}
+    // console.log(req.headers.authorization)
 
     try {
         if (req.query.email) {
@@ -78,7 +79,13 @@ app.get('/users', async (req, res) => {
                 email: req.query.email
             }
         }
-       
+
+        if (req.query.role) {
+            filter = {
+                role: req.query.role
+            }
+        }
+
         // console.log(filter);
         const result = await userCollection.find(filter).toArray()
         if (result.length > 0) {
@@ -119,10 +126,75 @@ app.post('/users', async (req, res) => {
     }
 })
 
+
+app.put('/updateuser/:id', async (req, res) => {
+
+    try {
+        // ------------------------------------------------------
+        // update data to all mobile collacton
+        const filter = { _id: ObjectId(req.params.id) }
+
+        const findUserDataAndUpdate = await userCollection.updateOne(filter, {
+            $set: {
+                verify: true
+            }
+        })
+
+        // -------------------------------------------------------
+        console.log(findUserDataAndUpdate)
+        if (findUserDataAndUpdate.modifiedCount) {
+            res.send({
+                success: true,
+                message: 'Successfull updates'
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'do not update user '
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+
+//Delete user by id
+app.delete('/users/:id', async (req, res) => {
+    try {
+
+        const result = await userCollection.deleteOne({ _id: ObjectId(req.params.id) })
+
+        if (result.deletedCount) {
+            res.send({
+                success: true,
+                message: 'Deleted this users '
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'Not Deleted this mobiles '
+            })
+
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+
+
+
 //all mobile phone gate
 app.get('/mobiles', async (req, res) => {
     let filter = {}
-    // console.log(req)
+    // console.log(req.headers.authorization)
     try {
         if (req.query.catagori) {
             filter = {
@@ -130,11 +202,23 @@ app.get('/mobiles', async (req, res) => {
             }
         }
         if (req.query.email) {
+
             filter = {
-                'sellarInfo.sellarEmail': req.query.email
+                "sellarInfo.sellarEmail": req.query.email
+                // "sellarInfo.sellarEmail": "sampodnath@gmail.com"
             }
         }
+
+        // not work 
+        if (req.query.ads) {
+            console.log(req.query.ads)
+            filter = {
+                ads:req.query.ads   
+            }
+        }
+
         const result = await mobilesCollection.find(filter).toArray()
+
         res.send({
             success: true,
             data: result
@@ -148,7 +232,34 @@ app.get('/mobiles', async (req, res) => {
     }
 })
 
-// catagori mobile 
+
+app.get('/mobiles/ads', async (req, res) => {
+    let filter = {ads:true}
+    console.log(req.headers.authorization )
+    try {
+      
+        const result = await mobilesCollection.find(filter).toArray()
+
+        res.send({
+            success: true,
+            data: result
+        })
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+
+
+
+
+
+
+// catagori single mobile 
 app.get('/mobiles/:id', async (req, res) => {
     // console.log(req.params.id)
     try {
@@ -172,11 +283,65 @@ app.get('/mobiles/:id', async (req, res) => {
     }
 })
 
-//update mobilee
-app.patch('/mobiles/:id', async (req, res) => {
-    const datas = req.body
+// delete single mobile by id
+app.delete('/mobiles/:id', async (req, res) => {
     try {
-        const result = await mobilesCollection.updateOne({ _id: ObjectId(req.params.id) }, { $set: datas })
+
+        const result = await mobilesCollection.deleteOne({ _id: ObjectId(req.params.id) })
+
+        if (result.deletedCount) {
+            res.send({
+                success: true,
+                message: 'Deleted this mobiles '
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'Not Deleted this mobiles '
+            })
+
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+// creaite or post single mobile 
+app.post('/mobiles', async (req, res) => {
+    const bookingDos = req.body
+
+    try {
+        const result = await mobilesCollection.insertOne(bookingDos)
+        if (result.insertedId) {
+            res.send({
+                success: true,
+                message: `Booking successfull ${result.insertedId}`
+            })
+        } else {
+            res.send({
+                success: false,
+                message: `this not booking`
+            })
+        }
+
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message
+        })
+    }
+})
+
+
+//update mobilee
+app.put('/mobiles/:id', async (req, res) => {
+    const datas = req.body
+    // console.log(datas);
+    try {
+        const result = await mobilesCollection.updateOne({ _id: ObjectId(req.params.id) }, { $set: datas }, { upsert: true })
 
         if (result.modifiedCount) {
             res.send({
@@ -474,6 +639,9 @@ app.post('/payments', async (req, res) => {
         })
     }
 })
+
+
+
 
 
 
