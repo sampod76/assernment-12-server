@@ -67,15 +67,15 @@ app.post('/jwt', async (req, res) => {
 
 function jwtVerify(req, res, next) {
 
-    const authorisation = req.headers.authorisation
-    if (!authorisation) {
+    const authorization = req.headers.authorization
+    if (!authorization) {
         return res.status(401).send({
             success: false,
             message: 'unauthorised access 401'
         })
     }
 
-    jwt.verify(authorisation, process.env.JWT_TOKEN_KEY, function (error, decord) {
+    jwt.verify(authorization, process.env.JWT_TOKEN_KEY, function (error, decord) {
 
         if (error) {
             return res.status(403).send({
@@ -84,6 +84,7 @@ function jwtVerify(req, res, next) {
             })
 
         }
+
         req.decord = decord
         next()
     })
@@ -94,10 +95,9 @@ function jwtVerify(req, res, next) {
 
 // all users find get all 
 
-app.get('/users', async (req, res) => {
+app.get('/users',jwtVerify, async (req, res) => {
     let filter = {}
     // console.log(req.headers.authorization)
-
     try {
         if (req.query.email) {
             filter = {
@@ -152,9 +152,21 @@ app.post('/users', async (req, res) => {
 })
 
 
-app.put('/updateuser/:id', async (req, res) => {
+app.put('/updateuser/:id',jwtVerify, async (req, res) => {
+    const decodedEmial = req.decoded.email
 
     try {
+          // get user data base 
+          const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+          if (userEmail.email !== decodedEmial) {
+              return res.send({
+                  success: false,
+                  message: 'You are not correct person this is payment '
+              })
+          }
+  
+  //--------------------------------------------------------------
         // ------------------------------------------------------
         // update data to all mobile collacton
         const filter = { _id: ObjectId(req.params.id) }
@@ -187,12 +199,22 @@ app.put('/updateuser/:id', async (req, res) => {
 })
 
 
-//Delete user by id
-app.delete('/users/:id', async (req, res) => {
+//Delete user by id----------admin 
+app.delete('/users/:id',jwtVerify, async (req, res) => {
+    const decodedEmial = req.decoded.email
     try {
+  // get user data base 
+  const userEmail = await userCollection.findOne({ email: decodedEmial })
 
+  if (userEmail.email !== decodedEmial) {
+      return res.send({
+          success: false,
+          message: 'You are not correct person this is payment '
+      })
+  }
+
+//--------------------------------------------------------------
         const result = await userCollection.deleteOne({ _id: ObjectId(req.params.id) })
-
         if (result.deletedCount) {
             res.send({
                 success: true,
@@ -238,7 +260,7 @@ app.get('/mobiles', async (req, res) => {
         if (req.query.ads) {
             console.log(req.query.ads)
             filter = {
-                ads:req.query.ads   
+                ads: req.query.ads
             }
         }
 
@@ -258,11 +280,23 @@ app.get('/mobiles', async (req, res) => {
 })
 
 
-app.get('/mobiles/ads', async (req, res) => {
-    let filter = {ads:true}
+app.get('/mobiles/ads',jwtVerify, async (req, res) => {
+    let filter = { ads: true }
     // console.log(req.headers.authorization )
+    const decodedEmial = req.decoded.email
     try {
-      
+          // get user data base 
+          const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+          if (userEmail.email !== decodedEmial) {
+              return res.send({
+                  success: false,
+                  message: 'You are not correct person this is payment '
+              })
+          }
+  
+  //--------------------------------------------------------------
+
         const result = await mobilesCollection.find(filter).toArray()
 
         res.send({
@@ -309,8 +343,20 @@ app.get('/mobiles/:id', async (req, res) => {
 })
 
 // delete single mobile by id
-app.delete('/mobiles/:id', async (req, res) => {
+app.delete('/mobiles/:id',jwtVerify, async (req, res) => {
+    const decodedEmial = req.decoded.email
     try {
+  // get user data base 
+  const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+  if (userEmail.email !== decodedEmial) {
+      return res.send({
+          success: false,
+          message: 'You are not correct person this is payment '
+      })
+  }
+
+//--------------------------------------------------------------
 
         const result = await mobilesCollection.deleteOne({ _id: ObjectId(req.params.id) })
 
@@ -335,10 +381,22 @@ app.delete('/mobiles/:id', async (req, res) => {
 })
 
 // creaite or post single mobile 
-app.post('/mobiles', async (req, res) => {
+app.post('/mobiles',jwtVerify, async (req, res) => {
     const bookingDos = req.body
+    const decodedEmial = req.decoded.email
 
     try {
+          // get user data base 
+          const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+          if (userEmail.email !== decodedEmial) {
+              return res.send({
+                  success: false,
+                  message: 'You are not correct person this is payment '
+              })
+          }
+  
+  //--------------------------------------------------------------
         const result = await mobilesCollection.insertOne(bookingDos)
         if (result.insertedId) {
             res.send({
@@ -362,10 +420,22 @@ app.post('/mobiles', async (req, res) => {
 
 
 //update mobilee
-app.put('/mobiles/:id', async (req, res) => {
+app.put('/mobiles/:id',jwtVerify, async (req, res) => {
     const datas = req.body
+    const decodedEmial = req.decoded.email
     // console.log(datas);
     try {
+          // get user data base 
+          const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+          if (userEmail.email !== decodedEmial) {
+              return res.send({
+                  success: false,
+                  message: 'You are not correct person this is payment '
+              })
+          }
+  
+  //--------------------------------------------------------------
         const result = await mobilesCollection.updateOne({ _id: ObjectId(req.params.id) }, { $set: datas }, { upsert: true })
 
         if (result.modifiedCount) {
@@ -390,9 +460,21 @@ app.put('/mobiles/:id', async (req, res) => {
 
 
 //get booking 
-app.get('/booking', async (req, res) => {
+app.get('/booking',jwtVerify, async (req, res) => {
     const query = req.query.email
+    const decodedEmial = req.decoded.email
     try {
+          // get user data base 
+          const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+          if (userEmail.email !== decodedEmial) {
+              return res.send({
+                  success: false,
+                  message: 'You are not correct person this is payment '
+              })
+          }
+  
+  //--------------------------------------------------------------
         const result = await bookingCollection.find({ useremail: query }).toArray()
         // console.log(result)
         res.send({
@@ -408,9 +490,22 @@ app.get('/booking', async (req, res) => {
 })
 
 //get booking 
-app.get('/booking/:id', async (req, res) => {
+app.get('/booking/:id',jwtVerify, async (req, res) => {
     const id = req.params.id
+    const decodedEmial = req.decoded.email
     try {
+  // get user data base 
+  const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+  if (userEmail.email !== decodedEmial) {
+      return res.send({
+          success: false,
+          message: 'You are not correct person this is payment '
+      })
+  }
+
+//--------------------------------------------------------------
+
         const result = await bookingCollection.findOne({ _id: ObjectId(id) })
         if (result._id) {
             res.send({
@@ -431,9 +526,21 @@ app.get('/booking/:id', async (req, res) => {
     }
 })
 // update booking 
-app.patch('/booking/:id', async (req, res) => {
+app.patch('/booking/:id',jwtVerify, async (req, res) => {
     const id = req.params.id
+    const decodedEmial = req.decoded.email
     try {
+          // get user data base 
+          const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+          if (userEmail.email !== decodedEmial) {
+              return res.send({
+                  success: false,
+                  message: 'You are not correct person this is payment '
+              })
+          }
+  
+  //--------------------------------------------------------------
         const result = await bookingCollection.updateOne({ _id: ObjectId(id) }, { $set: { paid: true } })
         if (result.modifiedCount) {
             res.send({
@@ -456,10 +563,23 @@ app.patch('/booking/:id', async (req, res) => {
 
 // booking callection 
 
-app.post('/booking', async (req, res) => {
+app.post('/booking',jwtVerify, async (req, res) => {
     const bookingDos = req.body
-
+    console.log(req.headers.authorization)
+    const decodedEmial = req.decoded.email
     try {
+
+          // get user data base 
+          const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+          if (userEmail.email !== decodedEmial) {
+              return res.send({
+                  success: false,
+                  message: 'You are not correct person this is payment '
+              })
+          }
+  
+  //--------------------------------------------------------------
         const result = await bookingCollection.insertOne(bookingDos)
         if (result.insertedId) {
             res.send({
@@ -482,9 +602,23 @@ app.post('/booking', async (req, res) => {
 })
 
 //booking delete
-app.delete('/booking/:id', async (req, res) => {
+app.delete('/booking/:id',jwtVerify, async (req, res) => {
     const id = req.params.id
+    const decodedEmial = req.decoded.email
     try {
+  // get user data base 
+  const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+  if (userEmail.email !== decodedEmial) {
+      return res.send({
+          success: false,
+          message: 'You are not correct person this is payment '
+      })
+  }
+
+//--------------------------------------------------------------
+
+
         const result = await bookingCollection.deleteOne({ _id: ObjectId(id) })
         if (result.deletedCount) {
             res.send({
@@ -526,9 +660,25 @@ app.get('/whitelist', async (req, res) => {
 
 
 // whitelist post
-app.post('/whitelist', async (req, res) => {
+app.post('/whitelist',jwtVerify, async (req, res) => {
     const whitelistDos = req.body
+    console.log(req.headers.authorization)
+    const decodedEmial = req.decoded.email
     try {
+  // get user data base 
+  const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+  if (userEmail.email !== decodedEmial) {
+      return res.send({
+          success: false,
+          message: 'You are not correct person this is payment '
+      })
+  }
+
+//--------------------------------------------------------------
+
+
+
         const result = await whitelistCollection.insertOne(whitelistDos)
         if (result.insertedId) {
             res.send({
@@ -551,9 +701,23 @@ app.post('/whitelist', async (req, res) => {
 })
 
 // WhiteList delete 
-app.delete('/whitelist/:id', async (req, res) => {
+app.delete('/whitelist/:id',jwtVerify, async (req, res) => {
     const id = req.params.id
+    console.log(req.headers.authorization)
+    const decodedEmial = req.decoded.email
     try {
+  // get user data base 
+  const userEmail = await userCollection.findOne({ email: decodedEmial })
+
+  if (userEmail.email !== decodedEmial) {
+      return res.send({
+          success: false,
+          message: 'You are not correct person this is payment '
+      })
+  }
+
+
+
         const result = await whitelistCollection.deleteOne({ _id: ObjectId(id) })
         if (result.deletedCount) {
             res.send({
@@ -574,8 +738,9 @@ app.delete('/whitelist/:id', async (req, res) => {
     }
 })
 
-app.put('/updateMobile', async (req, res) => {
+app.put('/updateMobile',jwtVerify, async (req, res) => {
     const data = req.body
+       const decodedEmial = req.decoded.email
     try {
         // ------------------------------------------------------
         // update data to all mobile collacton
@@ -629,20 +794,23 @@ app.post('/create-payment-intent', async (req, res) => {
 })
 
 //payment post
-app.post('/payments', async (req, res) => {
+app.post('/payments',jwtVerify, async (req, res) => {
     const paymentData = req.body
-    // const decodedEmial = req.decoded.email
+    const decodedEmial = req.decoded.email
+    // console.log(req.headers.authorization)
     try {
 
+         
         // get user data base 
-        // const userEmail = await usersCollection.findOne({ email: decodedEmial })
+        const userEmail = await userCollection.findOne({ email: decodedEmial })
 
-        // if (userEmail.email !== decodedEmial) {
-        //     return res.send({
-        //         success: false,
-        //         message: 'You are not correct person this is payment '
-        //     })
-        // }
+        if (userEmail.email !== decodedEmial) {
+            return res.send({
+                success: false,
+                message: 'You are not correct person this is payment '
+            })
+        }
+
 
         const result = await paymentsCollection.insertOne(paymentData)
         if (result.insertedId) {
