@@ -66,7 +66,6 @@ app.post('/jwt', async (req, res) => {
 
 
 function jwtVerify(req, res, next) {
-
     const authorization = req.headers.authorization
     if (!authorization) {
         return res.status(401).send({
@@ -74,21 +73,30 @@ function jwtVerify(req, res, next) {
             message: 'unauthorised access 401'
         })
     }
-
     jwt.verify(authorization, process.env.JWT_TOKEN_KEY, function (error, decord) {
-
         if (error) {
             return res.status(403).send({
                 success: false,
                 message: '403 forbidden access'
             })
-
         }
-
         req.decord = decord
         next()
     })
+}
 
+
+// admin veryfiy 
+const verifyAdmin = async (req, res, next) => {
+    const decodedEmial = req.decoded.email
+    const gitUser = await usersCollection.findOne({ email: decodedEmial })
+    if (gitUser?.role !== 'admin') {
+        return res.status(401).send({
+            success: false,
+            message: 'You are not admin'
+        })
+    }
+    next()
 }
 
 
@@ -152,22 +160,13 @@ app.post('/users', async (req, res) => {
 })
 
 
-app.put('/updateuser/:id',jwtVerify, async (req, res) => {
+app.put('/updateuser/:id',jwtVerify,verifyAdmin, async (req, res) => {
     const decodedEmial = req.decoded.email
 
     try {
-          // get user data base 
-          const userEmail = await userCollection.findOne({ email: decodedEmial })
-
-          if (userEmail.email !== decodedEmial) {
-              return res.send({
-                  success: false,
-                  message: 'You are not correct person this is payment '
-              })
-          }
+          
   
-  //--------------------------------------------------------------
-        // ------------------------------------------------------
+  
         // update data to all mobile collacton
         const filter = { _id: ObjectId(req.params.id) }
 
@@ -200,20 +199,11 @@ app.put('/updateuser/:id',jwtVerify, async (req, res) => {
 
 
 //Delete user by id----------admin 
-app.delete('/users/:id',jwtVerify, async (req, res) => {
+app.delete('/users/:id',jwtVerify,verifyAdmin, async (req, res) => {
     const decodedEmial = req.decoded.email
     try {
-  // get user data base 
-  const userEmail = await userCollection.findOne({ email: decodedEmial })
 
-  if (userEmail.email !== decodedEmial) {
-      return res.send({
-          success: false,
-          message: 'You are not correct person this is payment '
-      })
-  }
 
-//--------------------------------------------------------------
         const result = await userCollection.deleteOne({ _id: ObjectId(req.params.id) })
         if (result.deletedCount) {
             res.send({
