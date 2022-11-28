@@ -857,10 +857,28 @@ app.post('/payments', jwtVerify, async (req, res) => {
 
 
 
+app.get('/reported', async (req, res) => {
+    console.log("first")
+    try {
+        const result = await reportCollection.find({}).toArray()
+console.log("object");
+        res.send({
+            success: true,
+            data: result
+        })
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message + ' error'
+        })
+    }
+})
+
 
 
 app.post('/reported', async (req, res) => {
-    const datas = res.body
+    const datas = req.body
+    console.log(datas);
     try {
         const result = await reportCollection.insertOne(datas)
         if (result.insertedId) {
