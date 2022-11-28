@@ -639,6 +639,41 @@ app.post('/payments', async (req, res) => {
         })
     }
 })
+app.patch('/payments', async (req, res) => {
+    const paymentData = req.body
+    // const decodedEmial = req.decoded.email
+    try {
+
+        // get user data base 
+        // const userEmail = await usersCollection.findOne({ email: decodedEmial })
+
+        // if (userEmail.email !== decodedEmial) {
+        //     return res.send({
+        //         success: false,
+        //         message: 'You are not correct person this is payment '
+        //     })
+        // }
+
+        const result = paymentsCollection.updateOne(paymentData)
+        if (result.matchedCount) {
+            res.send({
+                success: true,
+                message: 'successfully data inside',
+                insertedId: result.insertedId
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'payment is not inside database'
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message + ' error'
+        })
+    }
+})
 
 
 
