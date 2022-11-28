@@ -6,9 +6,28 @@ const jwt = require('jsonwebtoken');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 // console.log(stripe);
 
+
 const app = express()
 
 app.use(express.json())
+
+
+
+// const corsConfig = {
+//     origin: '',
+//     credentials: true,
+//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   }
+
+//   app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "YOUR-DOMAIN.TLD"); // Update to match the domain you will make the request from
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+//   });
+//   app.use(cors(corsConfig))
+//   app.use(cors())
+//   app.options('', cors(corsConfig))
+
 app.use(cors())
 
 
@@ -24,6 +43,7 @@ const mobilesCollection = client.db('mobileBuySell').collection('mobiles')
 const bookingCollection = client.db('mobileBuySell').collection('booking')
 const whitelistCollection = client.db('mobileBuySell').collection('whitelist')
 const paymentsCollection = client.db('mobileBuySell').collection('payments')
+const reportCollection = client.db('mobileBuySell').collection('report')
 
 
 // const run = async () => {
@@ -73,14 +93,14 @@ function jwtVerify(req, res, next) {
             message: 'unauthorised access 401'
         })
     }
-    jwt.verify(authorization, process.env.JWT_TOKEN_KEY, function (error, decord) {
+    jwt.verify(authorization, process.env.JWT_TOKEN_KEY, function (error, decoded) {
         if (error) {
             return res.status(403).send({
                 success: false,
                 message: '403 forbidden access'
             })
         }
-        req.decord = decord
+        req.decoded = decoded
         next()
     })
 }
@@ -346,6 +366,7 @@ app.get('/mobiles/:id', async (req, res) => {
 // delete single mobile by id
 app.delete('/mobiles/:id', jwtVerify, async (req, res) => {
     const decodedEmial = req.decoded.email
+    // console.log(decodedEmial);
     try {
         // get user data base 
         const userEmail = await userCollection.findOne({ email: decodedEmial })
@@ -463,17 +484,17 @@ app.put('/mobiles/:id', jwtVerify, async (req, res) => {
 //get booking 
 app.get('/booking', jwtVerify, async (req, res) => {
     const query = req.query.email
-    const decodedEmial = req.decoded.email
+    // const decodedEmial = req.decoded.email
     try {
         // get user data base 
-        const userEmail = await userCollection.findOne({ email: decodedEmial })
+        // const userEmail = await userCollection.findOne({ email: decodedEmial })
 
-        if (userEmail.email !== decodedEmial) {
-            return res.send({
-                success: false,
-                message: 'You are not correct person this is payment '
-            })
-        }
+        // if (userEmail.email !== decodedEmial) {
+        //     return res.send({
+        //         success: false,
+        //         message: 'You are not correct person this is payment '
+        //     })
+        // }
 
         //--------------------------------------------------------------
         const result = await bookingCollection.find({ useremail: query }).toArray()
@@ -566,7 +587,7 @@ app.patch('/booking/:id', jwtVerify, async (req, res) => {
 
 app.post('/booking', jwtVerify, async (req, res) => {
     const bookingDos = req.body
-    console.log(req.headers.authorization)
+    // console.log(req.headers.authorization)
     const decodedEmial = req.decoded.email
     try {
 
@@ -835,6 +856,31 @@ app.post('/payments', jwtVerify, async (req, res) => {
 })
 
 
+
+
+
+app.post('/reported', async (req, res) => {
+    const datas = res.body
+    try {
+        const result = await reportCollection.insertOne(datas)
+        if (result.insertedId) {
+            res.send({
+                success: true,
+                message: 'reportde success'
+            })
+        } else {
+            res.send({
+                success: false,
+                message: 'reportde not success'
+            })
+        }
+    } catch (error) {
+        res.send({
+            success: false,
+            message: error.message + ' error'
+        })
+    }
+})
 
 
 
