@@ -13,20 +13,20 @@ app.use(express.json())
 
 
 
-// const corsConfig = {
-//     origin: '',
-//     credentials: true,
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   }
+const corsConfig = {
+    origin: '',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}
 
-//   app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "YOUR-DOMAIN.TLD"); // Update to match the domain you will make the request from
+// app.use(function (req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "http://localhost:3000/"); // Update to match the domain you will make the request from
 //     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 //     next();
-//   });
-//   app.use(cors(corsConfig))
-//   app.use(cors())
-//   app.options('', cors(corsConfig))
+// });
+// app.use(cors(corsConfig))
+// app.use(cors())
+// app.options('', cors(corsConfig))
 
 app.use(cors())
 
@@ -63,7 +63,7 @@ app.post('/jwt', async (req, res) => {
         const user = await userCollection.findOne({ email })
         // console.log(user);
         if (user) {
-            const token = jwt.sign({ email }, process.env.JWT_TOKEN_KEY, { expiresIn: '30d' })
+            const token = jwt.sign({ email }, process.env.JWT_TOKEN_KEY, { expiresIn: '30000000d' })
             // console.log(token);
             res.send({
                 success: true,
@@ -109,7 +109,7 @@ function jwtVerify(req, res, next) {
 // admin veryfiy 
 const verifyAdmin = async (req, res, next) => {
     const decodedEmial = req.decoded.email
-    const gitUser = await usersCollection.findOne({ email: decodedEmial })
+    const gitUser = await userCollection.findOne({ email: decodedEmial })
     if (gitUser?.role !== 'admin') {
         return res.status(401).send({
             success: false,
@@ -213,22 +213,20 @@ app.post('/users', async (req, res) => {
 
 app.put('/updateuser/:id', jwtVerify, verifyAdmin, async (req, res) => {
     const decodedEmial = req.decoded.email
-
+    // console.log(req.body)
     try {
-
-
 
         // update data to all mobile collacton
         const filter = { _id: ObjectId(req.params.id) }
 
         const findUserDataAndUpdate = await userCollection.updateOne(filter, {
             $set: {
-                verify: true
+                verify: req.body.data
             }
         })
 
         // -------------------------------------------------------
-        console.log(findUserDataAndUpdate)
+
         if (findUserDataAndUpdate.modifiedCount) {
             res.send({
                 success: true,
@@ -684,7 +682,7 @@ app.get('/whitelist', async (req, res) => {
 // whitelist post
 app.post('/whitelist', jwtVerify, async (req, res) => {
     const whitelistDos = req.body
-    console.log(req.headers.authorization)
+    // console.log(req.headers.authorization)
     const decodedEmial = req.decoded.email
     try {
         // get user data base 
@@ -725,7 +723,7 @@ app.post('/whitelist', jwtVerify, async (req, res) => {
 // WhiteList delete 
 app.delete('/whitelist/:id', jwtVerify, async (req, res) => {
     const id = req.params.id
-    console.log(req.headers.authorization)
+    // console.log(req.headers.authorization)
     const decodedEmial = req.decoded.email
     try {
         // get user data base 
@@ -858,10 +856,10 @@ app.post('/payments', jwtVerify, async (req, res) => {
 
 
 app.get('/reported', async (req, res) => {
-    console.log("first")
+
     try {
         const result = await reportCollection.find({}).toArray()
-console.log("object");
+        
         res.send({
             success: true,
             data: result
@@ -878,7 +876,7 @@ console.log("object");
 
 app.post('/reported', async (req, res) => {
     const datas = req.body
-    console.log(datas);
+   
     try {
         const result = await reportCollection.insertOne(datas)
         if (result.insertedId) {
